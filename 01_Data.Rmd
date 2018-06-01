@@ -1,0 +1,124 @@
+---
+title: "reference"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Libraries
+```{r, warning = F}
+library(readr)
+#library(ggplot2)
+library(dplyr)
+#library(astro)
+#library(tidyverse)
+library(SciServer)
+library(readxl)
+```
+#Clean data
+```{r}
+fulldata <- read_csv("greenp_olina.liang@prismsus.org.csv")
+remove_outliers <- function(x, na.rm = TRUE, ...) {
+  qnt <- quantile(x, probs=c(.25, .75), na.rm = na.rm, ...)
+  H <- 1.5 * IQR(x, na.rm = na.rm)
+  y <- x
+  y[x < (qnt[1] - H)] <- NA
+  y[x > (qnt[2] + H)] <- NA
+  y
+}
+
+fulldata$z <- remove_outliers(fulldata$z)
+fulldata$h_alpha_flux <- remove_outliers(fulldata$h_alpha_flux)
+fulldata$h_alpha_flux_err <- remove_outliers(fulldata$h_alpha_flux_err)
+fulldata$h_alpha_eqw <- remove_outliers(fulldata$h_alpha_eqw)
+fulldata$h_beta_flux <- remove_outliers(fulldata$h_beta_flux)
+fulldata$h_beta_flux_err <- remove_outliers(fulldata$h_beta_flux_err)
+fulldata$h_beta_eqw <- remove_outliers(fulldata$h_beta_eqw)
+fulldata$h_neiii_3869_cont <- remove_outliers(fulldata$neiii_3869_cont)
+fulldata$neiii_3869_cont_err <- remove_outliers(fulldata$neiii_3869_cont_err)
+fulldata$oiii_4959_cont_err <- remove_outliers(fulldata$oiii_4959_cont_err)
+fulldata$oiii_5007_flux <- remove_outliers(fulldata$oiii_5007_flux)
+fulldata$oiii_5007_flux_err <- remove_outliers(fulldata$oiii_5007_flux_err)
+fulldata$oiii_4959_cont <- remove_outliers(fulldata$oiii_4959_cont)
+fulldata$h_beta_reqw <- remove_outliers(fulldata$h_beta_reqw)
+fulldata$h_beta_reqw_err <- remove_outliers(fulldata$h_beta_reqw_err)
+fulldata$d4000 <- remove_outliers(fulldata$d4000)
+fulldata$d4000_err <- remove_outliers(fulldata$d4000_err)
+fulldata$lgm_tot_p50 <- remove_outliers(fulldata$lgm_tot_p50)
+fulldata$lgm_fib_p50 <- remove_outliers(fulldata$lgm_fib_p50)
+fulldata$petroR50_r <- remove_outliers(fulldata$petroR50_r)
+
+fulldata <- fulldata[complete.cases(fulldata), ]
+```
+```{r}
+dt <- fulldata %>%
+  dplyr::select(-specobjid, -ra, -dec)
+dt <- scale(dt)
+dt <- as.data.frame(dt)
+
+dt_ids <- fulldata %>%
+  dplyr::select(specobjid, ra, dec)
+```
+
+#Clustering
+##K means
+```{r}
+mydata <- dt
+mydata_ids <- dt_ids
+fit <- kmeans(mydata, 5) # 8 cluster solution
+# get cluster means 
+aggregate(mydata,by=list(fit$cluster),FUN=mean)
+# append cluster assignment
+mydata <- data.frame(mydata, fit$cluster)
+#number of galaxies in each class
+mydata %>%
+  group_by(fit.cluster) %>%
+  summarise(n())
+mydata_ <- cbind(mydata, mydata_ids)
+```
+
+##Hierarchical clustering
+```{r}
+clusters <- hclust(dist(dt[1:2000,]))
+plot(clusters)
+#put in data table
+clusterCut <- cutree(clusters, 5) 
+dt_h <- cbind(fulldata[1:2000,], "Cluster" = clusterCut)
+```
+
+```{r}
+
+```
+
+
+
+##Get image
+```{r}
+## https://github.com/sciserver/SciScript-R
+
+## read password from file
+source("SkyServerPasswords.R")
+## example of file
+## Authentication_loginName = 'name@google.com';
+## Authentication_loginPassword = 'abc123456'
+
+
+library(SciServer)
+library(httr)
+library(jsonlite)
+library(utils)
+
+token1 = Authentication.login(Authentication_loginName, Authentication_loginPassword);
+user = Authentication.getKeystoneUserWithToken(token1)
+SkyServer_DataRelease = "DR14"
+```
+
+```{r}
+# dt_h %>% 
+#   group_by(Cluster) %>% 
+#   count()
+```
+
+

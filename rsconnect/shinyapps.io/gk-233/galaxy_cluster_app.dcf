@@ -1,0 +1,12 @@
+name: galaxy_cluster_app
+title: galaxy_cluster_app
+username:
+account: gk-233
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 352542
+bundleId: 1405151
+url: https://gk-233.shinyapps.io/galaxy_cluster_app/
+when: 1527859822.65331
+asMultiple: FALSE
+asStatic: FALSE
