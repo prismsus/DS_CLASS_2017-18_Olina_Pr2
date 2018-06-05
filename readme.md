@@ -2,7 +2,7 @@
 title: "readme"
 ---
 
-## R Markdown
+## Sky Survey Data Clustering
 - This is a project by Olina Liang for the data science class. Created in 2018.
 - This website analyzes the SkyServer DR14 data: http://www.sdss.org/.
 - Clustering methods k-means and hierarchical clustering are used to seperate the 12,557 data about galaxies into 5 clusters.
