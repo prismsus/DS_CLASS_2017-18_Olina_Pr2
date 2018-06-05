@@ -5,8 +5,8 @@ account: gk-233
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 352542
-bundleId: 1405151
+bundleId: 1412578
 url: https://gk-233.shinyapps.io/galaxy_cluster_app/
-when: 1527859822.65331
+when: 1528206970.66366
 asMultiple: FALSE
 asStatic: FALSE

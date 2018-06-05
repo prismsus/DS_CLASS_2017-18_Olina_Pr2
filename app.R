@@ -3,9 +3,14 @@ library(DT)
 library(ggplot2)
 library(tidyverse)
 library(png)
-library(EBImage)
+
 library(lattice)
 
+#devtools::install_github("Bioconductor/BiocGenerics")
+#devtools::install_github("aoles/EBImage")
+library(EBImage)
+
+#devtools::install_github("sciserver/SciScript-R")
 
 ksource <- function(x, ...) {
   library(knitr)
@@ -107,7 +112,7 @@ ui <- fluidPage(
         sidebarPanel(
           textInput("ra", "Input ra value of galaxy", "154.439916732445"),
           textInput("dec", "Input dec value of galaxy", "1.9460713607363"),
-          sliderInput("offset", "Number of observations:",
+          sliderInput("offset", "Threshold:",
                       min = 0, max = 0.05, value = 0.01, step = 0.005
           ),
           h4("Image selected:"),
